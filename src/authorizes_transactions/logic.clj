@@ -1,21 +1,23 @@
 (ns authorizes-transactions.logic)
 
-(defn account-reset? [account-atom]
-  (not (empty? account-atom)))
+(defn account-reset? [account]
+  (not (empty? account)))
 
 (defn insufficient-limit? [transaction account]
   (let [transaction-value (get-in transaction [:transaction :amount])
         account-limit (get-in account [:account :availableLimit])]
-    (< account transaction-value)))
+    (> transaction-value account-limit)))
 
 (defn card-blocked? [account]
   (-> (get-in account [:account :activeCard])
       (not)))
 
 (defn high-frequency? [transactions]
-  (> (count transaction) 3))
+  (> (count transactions) 3))
 
-(defn- same-merchant? [transaction merchant])
+(defn- same-merchant? [transaction merchant]
+  (-> (get-in transaction [:transaction :merchant])
+      (= merchant)))
 
 (defn similar-transaction? [last-transactions transaction]
   (let [transaction-merchant
