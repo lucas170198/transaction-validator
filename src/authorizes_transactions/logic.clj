@@ -24,5 +24,5 @@
         (get-in transaction [:transaction :merchant])]
     (-> (filter #(same-merchant? % transaction-merchant) last-transactions)
         (count)
-        (> 2))))
+        (> 2)))) 
 

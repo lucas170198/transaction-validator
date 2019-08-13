@@ -11,4 +11,4 @@
                                     [ring/ring-mock "0.3.2"]
                                     [midje "1.9.6"]]
                      :plugins [[lein-midje "3.2.1"]
-                               [lein-cloverage "1.0.13"]]}})
+                               [lein-cloverage "1.0.13"]]}}) 

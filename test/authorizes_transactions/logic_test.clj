@@ -37,5 +37,5 @@
        (fact "the vector have more then 3 transactions, return true"
              (high-frequency? transactions) => true)
        (fact "the vector have less or equal then 3 transactions, return false"
-             (high-frequency? (rest transactions)) => false))
+             (high-frequency? (rest transactions)) => false)) 
 
