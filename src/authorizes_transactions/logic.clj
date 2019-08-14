@@ -4,24 +4,24 @@
   (not (empty? account)))
 
 (defn insufficient-limit? [transaction account]
-  (let [transaction-value (get-in transaction [:transaction :amount])
-        account-limit (get-in account [:account :availableLimit])]
+  (let [transaction-value (:amount transaction)
+        account-limit (:availableLimit account)]
     (> transaction-value account-limit)))
 
 (defn card-blocked? [account]
-  (-> (get-in account [:account :activeCard])
+  (-> (:activeCard account)
       (not)))
 
 (defn high-frequency? [transactions]
   (> (count transactions) 3))
 
 (defn- same-merchant? [transaction merchant]
-  (-> (get-in transaction [:transaction :merchant])
+  (-> (:merchant transaction)
       (= merchant)))
 
 (defn similar-transaction? [last-transactions transaction]
   (let [transaction-merchant
-        (get-in transaction [:transaction :merchant])]
+        (:merchant transaction)]
     (-> (filter #(same-merchant? % transaction-merchant) last-transactions)
         (count)
         (> 2)))) 
