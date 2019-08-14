@@ -15,7 +15,7 @@
 (defn high-frequency? [transactions]
   (> (count transactions) 3))
 
-(defn- same-merchant? [transaction merchant]
+(defn same-merchant? [transaction merchant]
   (-> (:merchant transaction)
       (= merchant)))
 

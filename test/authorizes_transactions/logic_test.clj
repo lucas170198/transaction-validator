@@ -15,27 +15,35 @@
                    {:merchant "Nike shop" :amount 50 :time "2019-02-13T10:02:00.000Z"}
                    {:merchant "Habbibs" :amount 20 :time "2019-02-13T10:03:00.000Z"}])
 
-(facts "test the 'illegal-account-reset' rule to authorizes a account creation"
-       (fact "the result is false, don't exists an account"
-             (account-reset? nil) => false)
-       (fact "the result is true, already exists an account"
-             (account-reset? account) => true))
+(facts "Chack if already exists a acount in memory"
+       (fact "Already exists an acount"
+             (account-reset? account) => true)
+       (fact "Don't exists an acount"
+             (account-reset? nil) => false))
 
-(facts "test the limit validation authorize for a transaction"
-       (fact "the limit is enough to valid the transaction"
-             (insufficient-limit? transaction-low account) => false)
-       (fact "limit is less than transaction value"
-             (insufficient-limit? transaction-high account) => true))
+(facts "Check if account have suficient limit for a transaction"
+       (fact "Limit is less than transaction value"
+             (insufficient-limit? transaction-high account) => true)
+       (fact "The limit is enough to the transaction"
+             (insufficient-limit? transaction-low account) => false))
 
-(facts "test if the card is blocked or no in an account"
-       (fact "the card is blocked, return true"
+
+(facts "Check if card is blocked"
+       (fact "The card is blocked"
              (card-blocked? blocked-account) => true)
-       (fact "the card is unblocked, return false"
+       (fact "The card is unblocked"
              (card-blocked? account) => false))
 
-(facts "test if this have more than 3 transactions"
-       (fact "the vector have more then 3 transactions, return true"
+(facts "Count the number of transactions"
+       (fact "The vector have more then 3 transactions"
              (high-frequency? transactions) => true)
-       (fact "the vector have less or equal then 3 transactions, return false"
+       (fact "The vector have less or equal then 3 transactions"
              (high-frequency? (rest transactions)) => false))
+
+(facts "Compare merchant for a transaction"
+       (let [merchant "Burger King"] 
+            (fact "The transaction is from same merchant"
+                  (same-merchant? transaction-low merchant) => true)
+            (fact "The transaction is from another merchant"
+                  (same-merchant? transaction-high merchant) => false)))
 
