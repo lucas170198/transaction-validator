@@ -15,14 +15,15 @@
 (defn high-frequency? [transactions]
   (> (count transactions) 3))
 
-(defn same-merchant? [transaction merchant]
+(defn same-attributes? [transaction merchant amount]
   (-> (:merchant transaction)
-      (= merchant)))
+      (= merchant)
+      (and
+       (= amount (:amount transaction)))))
 
 (defn similar-transaction? [last-transactions transaction]
-  (let [transaction-merchant
-        (:merchant transaction)]
-    (-> (filter #(same-merchant? % transaction-merchant) last-transactions)
+  (let [merchant (:merchant transaction) amount (:amount transaction)]
+    (-> (filter #(same-attributes? % merchant transaction) last-transactions)
         (count)
         (> 2)))) 
 
