@@ -1,15 +1,15 @@
 (ns authorizes-transactions.logic)
 
-(defn account-reset? [account]
-  (not (empty? account)))
+(defn acount-reset? [acount]
+  (not (empty? acount)))
 
-(defn insufficient-limit? [transaction account]
+(defn insufficient-limit? [transaction acount]
   (let [transaction-value (:amount transaction)
-        account-limit (:availableLimit account)]
-    (> transaction-value account-limit)))
+        acount-limit (:availableLimit acount)]
+    (> transaction-value acount-limit)))
 
-(defn card-blocked? [account]
-  (-> (:activeCard account)
+(defn card-blocked? [acount]
+  (-> (:activeCard acount)
       (not)))
 
 (defn high-frequency? [transactions]

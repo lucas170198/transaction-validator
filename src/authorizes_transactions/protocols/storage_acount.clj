@@ -2,5 +2,5 @@
 
 (defprotocol StorageAcount
   "Protocol for storage a client"
-  (get-acount [acount] "return a storage acount")
-  (create-acount [acount] "create a new acount and return this object"))
+  (get-acount [_] "return a storage acount")
+  (create-acount! [acount] "create a new acount and return this object"))
