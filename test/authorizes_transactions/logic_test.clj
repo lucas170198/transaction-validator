@@ -15,10 +15,10 @@
                    {:merchant "Nike shop" :amount 50 :time "2019-02-13T10:02:00.000Z"}
                    {:merchant "Habbibs" :amount 20 :time "2019-02-13T10:03:00.000Z"}])
 
-(facts "Chack if already exists a acount in memory"
-       (fact "Already exists an acount"
+(facts "Chack if already exists a account in memory"
+       (fact "Already exists an account"
              (account-reset? account) => true)
-       (fact "Don't exists an acount"
+       (fact "Don't exists an account"
              (account-reset? nil) => false))
 
 (facts "Check if account have suficient limit for a transaction"
