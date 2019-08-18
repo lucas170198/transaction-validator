@@ -1,18 +1,14 @@
 (ns authorizes-transactions.db.saving-transaction
   (:require [authorizes-transactions.logic :as logic]))
 
-(def transaction-hist (atom nil))
+(def transaction-hist (atom []))
 
-(defn get-transactions [] @transactions)
+(defn get-transactions [] @transaction-hist)
 
-(defn sum-transactions [transactions]
-  (-> (map :amount)
-      (reduce +)))
 
-(defn new-account-state [account]
-  (->> (sum-transactions @transaction-hist)
-       (update account :availableLimit -)))
+; (defn sum-transactions []
+;   (-> (map :amount @transaction-hist)
+;       (reduce +)))
 
-(defn save-transaction! [transaction account]
-  (swap! @transaction-hist (conj @transaction-hist transaction))
-  (new-account-state account))
+(defn save-transaction! [transaction]
+  (swap! transaction-hist conj transaction))

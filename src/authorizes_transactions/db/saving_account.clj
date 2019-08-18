@@ -2,16 +2,12 @@
   (:require
    [authorizes-transactions.logic :as logic]))
 
-(def accounts (atom nil))
+(def account (atom nil))
 
 (defn get-account [] @account)
 
-(defn create-account! [account]
-    (if (logic/account-reset? @accounts)
-      (merge @accounts
-             {:violations ["illegal-account-reset"]})
-      (merge (reset! @accounts account)
-             {:violations []}))))
+(defn create-account! [new-account]
+  (reset! account new-account))
 
-(defn update-account! [account]
-  (swap! @accounts account))
+(defn update-account! [limit]
+  (swap! account assoc :availableLimit limit))

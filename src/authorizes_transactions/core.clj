@@ -1,8 +1,10 @@
 (ns authorizes-transactions.core
+  (:require  [cheshire.core :refer [parse-string]]
+             [authorizes-transactions.handler :as handler])
   (:gen-class))
 
-
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
+(defn -main [& args]
+  (-> (parse-string (read-line) true)
+      (handler/validate)
+      (println))
+  (recur args))
