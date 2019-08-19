@@ -5,10 +5,5 @@
 
 (defn get-transactions [] @transaction-hist)
 
-
-; (defn sum-transactions []
-;   (-> (map :amount @transaction-hist)
-;       (reduce +)))
-
 (defn save-transaction! [transaction]
   (swap! transaction-hist conj transaction))

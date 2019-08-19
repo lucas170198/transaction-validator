@@ -6,48 +6,48 @@
 
 (def blocked-account {:activeCard false :availableLimit 100})
 
-(def transaction-one {:merchant "Burger King" :amount 20 :time "2019-02-13T10:00:00.000Z"})
+(def transaction-one {:merchant "Burger King" :amount 20 :time "2019-02-13T10:02:00.000Z"})
 
-(def transaction-two  {:merchant "KFC" :amount 110 :time "2019-02-13T10:00:01.000Z"})
+(def transaction-two  {:merchant "KFC" :amount 110 :time "2019-02-13T10:00:00.000Z"})
 
 (def transactions [{:merchant "Burger King" :amount 20 :time "2019-02-13T10:00:00.000Z"}
-                   {:merchant "Mac Donalds" :amount 30 :time "2019-02-13T10:01:00.000Z"}
+                   {:merchant "Burger King" :amount 20 :time "2019-02-13T10:01:00.000Z"}
                    {:merchant "Nike shop" :amount 50 :time "2019-02-13T10:02:00.000Z"}
                    {:merchant "Habbibs" :amount 20 :time "2019-02-13T10:03:00.000Z"}])
 
-(facts "Chack if already exists a account in memory"
-       (fact "Already exists an account"
+(facts "Account reset violation"
+       (fact "Already exists an account" :unit
              (account-reset? account) => true)
-       (fact "Don't exists an account"
+       (fact "Don't exists an account" :unit
              (account-reset? nil) => false))
 
-(facts "Check if account have suficient limit for a transaction"
-       (fact "Limit is less than transaction value"
+(facts "Insufucient limit violation"
+       (fact "Limit is less than transaction value" :unit
              (insufficient-limit? transaction-two account) => true)
-       (fact "The limit is enough to the transaction"
+       (fact "The limit is enough to the transaction" :unit
              (insufficient-limit? transaction-one account) => false))
 
-
-(facts "Check if card is blocked"
-       (fact "The card is blocked"
+(facts "Card blocked violation"
+       (fact "The card is blocked" :unit
              (card-blocked? blocked-account) => true)
-       (fact "The card is unblocked"
+       (fact "The card is unblocked" :unit
              (card-blocked? account) => false))
 
-(facts "Count the number of transactions"
-       (fact "The vector have more then 3 transactions"
-             (high-frequency? transactions) => true)
-       (fact "The vector have less or equal then 3 transactions"
-             (high-frequency? (rest transactions)) => false))
+(facts "Same attributes function"
+       (fact "Has same attributs" :unit
+             (same-attributes? transaction-one "Burger King" 20) => true)
+       (fact "Has diferent attributes" :unit
+             (same-attributes? transaction-one "KFC" 40) => false))
 
-(facts "Compare attributes for a transaction"
-       (let [merchant "Burger King" amount 20 another-amount 40 another-merchant "KFC"] 
-         (fact "The transaction is from same merchant and has the same amount"
-               (same-attributes? transaction-one merchant amount) => true)
-         (fact "The transaction is from another merchant and has another amount"
-               (same-attributes? transaction-one another-merchant another-amount) => false)
-         (fact "The transaction is from same merchant but has another amount"
-               (same-attributes? transaction-one merchant another-amount) => false)
-         (fact "The transaction is from another merchant but has same amount"
-               (same-attributes? transaction-one another-merchant amount))))
+(facts "High frenquency small interval violation"
+       (fact "Has than 3 transactions on a 2 minute interval" :integration
+             (high-frequency? transactions transaction-one) => true)
+       (fact "Has less then 3 transactions on a 2 minute interval" :integration
+             (high-frequency? transactions transaction-two) => false))
+
+(facts "Doubled transaction violation"
+       (fact "Has than 2 similar transactions (same amount and merchant) in a 2 minutes interval" :integration
+             (similar-transaction? transactions transaction-one) => true)
+       (fact "Dont has than 2 similar transactions (same amount and merchant) in a 2 minutes interval" :integration
+             (similar-transaction? transactions transaction-two) => false))
 

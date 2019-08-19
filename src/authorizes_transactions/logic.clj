@@ -15,11 +15,11 @@
       (not)))
 
 
-(defn get-transaction-time [transaction]
+(defn- get-transaction-time [transaction]
   (-> (:time transaction)
       (local/to-local-date-time)))
 
-(defn between-range? [transaction minute transaction-hist]
+(defn- between-range? [transaction minute transaction-hist]
   (let [min-time (time/minus (get-transaction-time transaction)
                              (time/minutes minute))
         max-time (time/plus (get-transaction-time transaction)
