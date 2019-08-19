@@ -10,18 +10,18 @@
      actual-violations))
   ([flag text] (format-violation-text [] flag text)))
 
-(defn get-transaction-violations [transaction account]
+(defn get-transaction-violations [transaction account transacion-hist]
   (-> (format-violation-text
        (logic/card-blocked? account) "card-blocked")
       (format-violation-text
        (logic/insufficient-limit? transaction account) "insufficient-limit")
       (format-violation-text
-       (logic/high-frequency? transaction) "high-frequency-small-interval")
+       (logic/high-frequency? transacion-hist transaction) "high-frequency-small-interval")
       (format-violation-text
        (logic/similar-transaction? transaction (db-transaction/get-transactions)) "doubled-transaction")))
 
-(defn valid-transaction? [transacion account]
-  (-> (get-transaction-violations transacion account)
+(defn valid-transaction? [transacion account transacion-hist]
+  (-> (get-transaction-violations transacion account transacion-hist)
       (count)
       (= 0)))
 
@@ -39,12 +39,17 @@
         atual-limit (:availableLimit account)]
     (-> (- atual-limit trans-value)
         (db-account/update-account!)))
-  {:violations []})
+  [])
+
+(defn format-transaction-result [violations]
+  (merge (db-account/get-account)
+         {:violations violations}))
 
 (defn new-transaction! [transacion]
   (if-let [account (db-account/get-account)]
-    (if (valid-transaction? transacion account)
-      (merge (save-transaction! transacion account)
-             (db-account/get-account))
-      (merge (get-transaction-violations transacion account)
-             (db-account/get-account)))))
+    (let [transactions (db-transaction/get-transactions)]
+      (if (valid-transaction? transacion account transactions)
+        (format-transaction-result
+         (save-transaction! transacion account))
+        (format-transaction-result
+         (get-transaction-violations transacion account transactions))))))

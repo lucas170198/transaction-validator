@@ -1,4 +1,6 @@
-(ns authorizes-transactions.logic)
+(ns authorizes-transactions.logic
+  (:require [clj-time.local :as local]
+            [clj-time.core :as time]))
 
 (defn account-reset? [account]
   (not (empty? account)))
@@ -12,8 +14,24 @@
   (-> (:activeCard account)
       (not)))
 
-(defn high-frequency? [transaction-hist]
-  (> (count transaction-hist) 3))
+
+(defn get-transaction-time [transaction]
+  (-> (:time transaction)
+      (local/to-local-date-time)))
+
+(defn between-range? [transaction minute transaction-hist]
+  (let [min-time (time/minus (get-transaction-time transaction)
+                             (time/minutes minute))
+        max-time (time/plus (get-transaction-time transaction)
+                             (time/minutes minute))]
+    (time/within?
+     (time/interval min-time max-time)
+     (get-transaction-time transaction-hist))))
+
+(defn high-frequency? [transaction-hist transaction]
+  (-> (filter #(between-range? transaction 2 %) transaction-hist)
+      (count)
+      (>= 3)))
 
 (defn same-attributes? [transaction merchant amount]
   (-> (:merchant transaction)

@@ -17,8 +17,9 @@
   (empty? (transaction-schema json-map)))
 
 (defn validate [json-map]
-  (cond (operation-account? json-map) (controller/create-account!
-                                       (:account json-map))
-        (operation-transaction? json-map) (controller/new-transaction!
-                                           (:transaction json-map))
-        :else ""))
+  (try (cond (operation-account? json-map) (controller/create-account!
+                                            (:account json-map))
+             (operation-transaction? json-map) (controller/new-transaction!
+                                                (:transaction json-map))
+             :else "")
+       (catch Exception e (println ""))))
