@@ -10,15 +10,15 @@
      actual-violations))
   ([flag text] (format-violation-text [] flag text)))
 
-(defn get-transaction-violations [transaction account transacion-hist]
+(defn get-transaction-violations [transaction account transaction-hist]
   (-> (format-violation-text
        (logic/card-blocked? account) "card-blocked")
       (format-violation-text
        (logic/insufficient-limit? transaction account) "insufficient-limit")
       (format-violation-text
-       (logic/high-frequency? transacion-hist transaction) "high-frequency-small-interval")
+       (logic/high-frequency? transaction-hist transaction) "high-frequency-small-interval")
       (format-violation-text
-       (logic/similar-transaction? transaction (db-transaction/get-transactions)) "doubled-transaction")))
+       (logic/similar-transaction? transaction-hist transaction) "doubled-transaction")))
 
 (defn valid-transaction? [transacion account transacion-hist]
   (-> (get-transaction-violations transacion account transacion-hist)

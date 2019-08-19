@@ -23,7 +23,7 @@
   (let [min-time (time/minus (get-transaction-time transaction)
                              (time/minutes minute))
         max-time (time/plus (get-transaction-time transaction)
-                             (time/minutes minute))]
+                            (time/minutes minute))]
     (time/within?
      (time/interval min-time max-time)
      (get-transaction-time transaction-hist))))
@@ -34,16 +34,16 @@
       (>= 3)))
 
 (defn same-attributes? [transaction merchant amount]
-  (-> (:merchant transaction)
-      (= merchant)
-      (and
-       (= amount (:amount transaction)))))
+  (and (= merchant (:merchant transaction))
+       (= amount (:amount transaction))))
 
 (defn similar-transaction? [transaction-hist transaction]
-  (let [merchant (:merchant transaction) amount (:amount transaction)]
-    (-> (filter #(same-attributes? % merchant transaction) transaction-hist)
+  (let [merchant (:merchant transaction)
+        amount (:amount transaction)]
+    (-> (filter #(same-attributes? % merchant amount)
+                (filter #(between-range? transaction 2 %) transaction-hist))
         (count)
-        (> 2))))
+        (>= 2))))
 
 
 
