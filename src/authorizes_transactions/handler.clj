@@ -21,4 +21,4 @@
                                        (:account json-map))
         (operation-transaction? json-map) (controller/new-transaction!
                                            (:transaction json-map))
-        :else ""))
+        :else (throw (Exception. "No schema found"))))

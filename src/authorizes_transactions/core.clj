@@ -4,7 +4,10 @@
   (:gen-class))
 
 (defn -main [& args]
-  (-> (parse-string (read-line) true)
-      (handler/validate)
-      (println))
+  (try (println "- input:")
+       (->> (parse-string (read-line) true)
+            (handler/validate)
+            (str "- output: \n")
+            (println))
+       (catch Exception e (println "")))
   (recur args))
