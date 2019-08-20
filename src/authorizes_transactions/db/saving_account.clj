@@ -1,6 +1,4 @@
-(ns authorizes-transactions.db.saving-account
-  (:require
-   [authorizes-transactions.logic :as logic]))
+(ns authorizes-transactions.db.saving-account)
 
 (def account (atom nil))
 

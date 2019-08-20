@@ -1,44 +1,50 @@
 # authorizes-transactions
+A application that authoreizes a transaction for a specific account. This application has been developed to
+the Nubank software engenieer test. 
 
-FIXME: description
+## Architecture
+The code was organized into some layers: 'logic', 'handler', 'core', 'controller', and 'db' layer with in memory databases of application 
 
-## Installation
+### logic
+Have all the business rules to validate a new transaction
 
-Download from http://example.com/FIXME.
+### handler
+Get the json string thats has been write by the user, tries covert to availables types fromats and redirect to the controller.
+
+### core
+The main file, thats makes the interface with the users.
+
+### controller 
+Orchestrating calls between the layers of aplication.
+
+### db layer
+Layer thats contains a in memory database operations.
 
 ## Usage
+### To run the application.
 
-FIXME: explanation
+    $ lein run 
+So you can  wirte some json input in the command line
 
-    $ java -jar authorizes-transactions-0.1.0-standalone.jar [args]
+### To run the test
+    $ lein midje :autotest
 
-## Options
-
-FIXME: listing of options this app accepts.
 
 ## Examples
+    $ lein run
+    - input:
+    { "account": { "activeCard": true, "availableLimit": 100 } }
+    = output:
+    { "account": { "activeCard": true, "availableLimit": 100 }, "violations": [] }
+    - input:
+    { "transaction": { "merchant": "Burger King", "amount": 20, "time": "2019-02-13T10:00:00.000Z" } }
+    - output:
+    { "account": { "activeCard": true, "availableLimit": 80 }, "violations": [] }
+    - input: 
+    { "transaction": { "merchant": "Habbib's", "amount": 90, "time": "2019-02-13T11:00:00.000Z" } }
+    - output:
+    { "account": { "activeCard": true, "availableLimit": 80 }, "violations": [ "insufficient-limit" ] }
 
-...
 
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2019 FIXME
-
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+### Missing aspects
+The application can be improved by implementing the option to load input from external files making data entry easier
